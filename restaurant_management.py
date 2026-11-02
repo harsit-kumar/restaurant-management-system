@@ -50,6 +50,64 @@ cursor.execute('''
 
 conn.commit()
 
+cursor.execute('''
+  CREATE TABLE IF NOT EXISTS restaurant_tables (
+    table_id TEXT PRIMARY KEY,
+    seats INT NOT NULL,
+    state TEXT NOT NULL,
+    order_id TEXT,
+    since TIME
+  )
+''')
+
+cursor.execute('''
+  INSERT OR IGNORE INTO restaurant_tables VALUES
+  ("T01", 2, "Available", NULL, NULL),
+  ("T02", 2, "Available", NULL, NULL),
+  ("T03", 4, "Available", NULL, NULL),
+  ("T04", 4, "Available", NULL, NULL),
+  ("T05", 4, "Available", NULL, NULL),
+  ("T06", 4, "Available", NULL, NULL),
+  ("T07", 6, "Available", NULL, NULL),
+  ("T08", 6, "Available", NULL, NULL),
+  ("T09", 8, "Available", NULL, NULL),
+  ("T10", 8, "Available", NULL, NULL)
+''')
+
+def view_table_status():
+  print(f"\n{'TABLE STATUS'.center(46)}")
+  print("-"*46)
+  print(f"{'TABLE_ID':<9} {'SEATS':<6} {'STATE':<10} {'ORDER_ID':<9} SINCE")
+  print("-"*46)
+  
+  available_count = 0
+  occupied_count = 0
+  
+  cursor.execute("SELECT * FROM restaurant_tables")
+  for row in cursor.fetchall():
+    if row[2] == "Occupied":
+      state = f"\x1b[31m{row[2]}\x1b[0m  "
+      occupied_count += 1
+    else:
+      state = row[2]
+      available_count += 1
+      
+    if row[3] is not None:
+      order_id = f"\x1b[31m{row[3].center(8)}\x1b[0m "
+    else:
+      order_id = "--".center(8)
+      
+    if row[4] is not None:
+      since = f"\x1b[31m{row[4]}\x1b[0m"
+    else:
+      since = "--".center(8)
+      
+    print(f"{row[0]:<9} {row[1]:<6} {state:<10} {order_id:<9} {since}")
+    
+  print("-"*46)
+  print("\x1b[1;36m" + f"Available: {available_count}  •  Occupied: {occupied_count}".center(46) + "\x1b[0m")
+  print("-"*46)
+
 def view_all_items():
   print(f"\n{'RESTAURANT MENU'.center(61)}")
   print("-"*61)
@@ -321,7 +379,7 @@ def main():
     print("\n1. New Order")
     print("2. View & Edit Orders")
     print("3. Billing & Payment")
-    print("4. Table Status & Booking")
+    print("4. View Table Status")
     print("5. Menu Management")
     print("6. Feedback")
     print("7. Exit\n")
@@ -335,7 +393,7 @@ def main():
     elif choice == '3':
       pass
     elif choice == '4':
-      pass
+      view_table_status()
     elif choice == '5':
       menu_management()
     elif choice == '6':
