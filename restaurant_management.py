@@ -74,6 +74,8 @@ cursor.execute('''
   ("T10", 8, "Available", NULL, NULL)
 ''')
 
+conn.commit()
+
 def view_table_status():
   print(f"\n{'TABLE STATUS'.center(46)}")
   print("-"*46)
