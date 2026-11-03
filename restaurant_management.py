@@ -7,10 +7,10 @@ cursor = conn.cursor()
 cursor.execute('''
   CREATE TABLE IF NOT EXISTS menu (
     id INT PRIMARY KEY,
-    name TEXT NOT NULL,
-    category TEXT NOT NULL,
+    name VARCHAR(20) NOT NULL,
+    category VARCHAR(12) NOT NULL,
     price INT NOT NULL,
-    status TEXT NOT NULL
+    status VARCHAR(13) NOT NULL
   )
 ''')
 
@@ -52,10 +52,10 @@ conn.commit()
 
 cursor.execute('''
   CREATE TABLE IF NOT EXISTS restaurant_tables (
-    table_id TEXT PRIMARY KEY,
+    table_id CHAR(3) PRIMARY KEY,
     seats INT NOT NULL,
-    state TEXT NOT NULL,
-    order_id TEXT,
+    state VARCHAR(9) NOT NULL,
+    order_id VARCHAR(5),
     since TIME
   )
 ''')
@@ -95,12 +95,12 @@ def view_table_status():
       available_count += 1
       
     if row[3] is not None:
-      order_id = f"\x1b[31m{row[3].center(8)}\x1b[0m "
+      order_id = row[3].center(8)
     else:
       order_id = "--".center(8)
       
     if row[4] is not None:
-      since = f"\x1b[31m{row[4]}\x1b[0m"
+      since = row[4]
     else:
       since = "--".center(8)
       
